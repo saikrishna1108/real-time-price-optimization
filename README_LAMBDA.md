@@ -2,7 +2,7 @@
 
 ## 🚀 Overview
 
-This is a **proof of concept** demonstrating real-time price optimization using AWS Lambda functions. The system simulates dynamic pricing based on multiple factors including demand, inventory, time, user segments, and market conditions.
+ The system simulates dynamic pricing based on multiple factors including demand, inventory, time, user segments, and market conditions.
 
 ## 🏗️ Architecture
 
