@@ -1,372 +1,339 @@
-# Real-Time Price Optimization with AWS Lambda
+# Real-Time Price Optimization Platform
 
-## 🚀 Overview
-
- The system simulates dynamic pricing based on multiple factors including demand, inventory, time, user segments, and market conditions.
+A sophisticated, serverless AWS-based application that implements a Multi-Factor Pricing Algorithm for dynamic price optimization across various industries including e-commerce, travel, and marketplaces.
 
 ## 🏗️ Architecture
-# Real-Time Price Optimization Application
 
-A serverless AWS-based application that implements Multi-Factor Pricing Algorithm for dynamic price optimization across various industries (e-commerce, flights, marketplaces).
-
-## Architecture
-
-### AWS Services Used:
-- **AWS Lambda** - Core serverless compute
-- **API Gateway** - RESTful API endpoints
-- **EventBridge** - Event-driven triggers
-- **DynamoDB** - NoSQL database
-- **S3** - Static hosting & data storage
-- **CloudWatch** - Monitoring & logging
-- **AWS Bedrock** - AI/ML services
-
+### Core Architecture Overview
 
 ```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Frontend      │────│   API Gateway    │────│  Lambda         │
-│   (React)       │    │                  │    │  Functions      │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                                         │
-                       ┌──────────────────┐             │
-                       │   EventBridge    │─────────────┘
-                       │   (Scheduler)    │
-                       └──────────────────┘
-                                │
-                       ┌──────────────────┐
-                       │   CloudWatch     │
-                       │   (Monitoring)   │
-                       └──────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                    Real-Time Price Optimization Platform        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────┐    ┌─────────────────┐    ┌──────────────┐ │
+│  │   Frontend      │    │   API Gateway   │    │   EventBridge│ │
+│  │   (React SPA)   │◄──►│   (REST API)    │◄──►│   (Events)   │ │
+│  └─────────────────┘    └─────────────────┘    └──────────────┘ │
+│           │                       │                      │      │
+│           │                       │                      │      │
+│           ▼                       ▼                      ▼      │
+│  ┌─────────────────┐    ┌─────────────────┐    ┌──────────────┐ │
+│  │   S3 Bucket     │    │   AWS LAMBDA    │    │   AWS LAMBDA │ │
+│  │  (Static Host)  │    │   (Core Engine) │    │ (Event Proc) │ │
+│  └─────────────────┘    └─────────────────┘    └──────────────┘ │
+│                                   │                             │
+│                                   ▼                             │
+│                          ┌─────────────────┐                    │
+│                          │   DynamoDB      │                    │
+│                          │  (Data Store)   │                    │
+│                          └─────────────────┘                    │
+│                                   │                             │
+│                                   ▼                             │
+│                          ┌─────────────────┐                    │
+│                          │   AWS Bedrock   │                    │
+│                          │   (AI/ML)       │                    │
+│                          └─────────────────┘                    │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-## 📦 Lambda Functions
+### AWS Lambda as the Core Engine
 
-### 1. Price Calculator (`price-calculator.ts`)
-**Purpose**: Real-time price calculation based on multiple factors
+**AWS Lambda** serves as the heart of our real-time price optimization platform, providing:
 
-**Features**:
-- Multi-factor pricing algorithm
-- User segment-based adjustments
-- Time-based pricing (rush hours, weekends)
-- Inventory-level adjustments
-- Weather and seasonality factors
-- Competitor price analysis
-- Confidence scoring
+#### 🚀 Lambda Functions Architecture
 
-**API Endpoint**: `POST /pricing/calculate`
-
-**Request Example**:
-```json
-{
-  "productId": "prod-001",
-  "userId": "user-123",
-  "userSegment": "returning_customer"
-}
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    AWS LAMBDA CORE FUNCTIONS                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │              Multi-Factor Pricing Engine                   │ │
+│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐          │ │
+│  │  │   Demand    │ │  Inventory  │ │   Time      │          │ │
+│  │  │ Elasticity  │ │  Levels     │ │  Factors    │          │ │
+│  │  └─────────────┘ └─────────────┘ └─────────────┘          │ │
+│  │                                                             │ │
+│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐          │ │
+│  │  │ Competitor  │ │   User      │ │ Historical  │          │ │
+│  │  │  Pricing    │ │ Segments    │ │Performance  │          │ │
+│  │  └─────────────┘ └─────────────┘ └─────────────┘          │ │
+│  │                                                             │ │
+│  │  ┌─────────────┐                                           │ │
+│  │  │  External   │                                           │ │
+│  │  │  Factors    │                                           │ │
+│  │  └─────────────┘                                           │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│                              │                                  │
+│                              ▼                                  │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │              API Handlers & Event Processors               │ │
+│  │                                                             │ │
+│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐          │ │
+│  │  │ Pricing API │ │ Price       │ │ Analytics   │          │ │
+│  │  │ Handler     │ │ Trigger     │ │ API         │          │ │
+│  │  └─────────────┘ └─────────────┘ └─────────────┘          │ │
+│  │                                                             │ │
+│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐          │ │
+│  │  │ Product     │ │ Simulation  │ │ Test Local  │          │ │
+│  │  │ Catalog     │ │ Trigger     │ │ Handler     │          │ │
+│  │  └─────────────┘ └─────────────┘ └─────────────┘          │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-**Response Example**:
-```json
-{
-  "success": true,
-  "timestamp": "2024-01-15T10:30:00Z",
-  "data": {
-    "product": {
-      "id": "prod-001",
-      "name": "Premium Flight Ticket - NYC to LAX",
-      "basePrice": 299.99,
-      "currentPrice": 299.99
-    },
-    "pricing": {
-      "originalPrice": 299.99,
-      "newPrice": 334.50,
-      "priceChange": 34.51,
-      "priceChangePercent": "11.50",
-      "confidence": 0.87,
-      "recommendation": "increase",
-      "adjustments": {
-        "timeOfDay": 0.15,
-        "weekend": 0.10,
-        "inventory": 0.25,
-        "demand": 0.20,
-        "userSegment": 0.02
-      }
-    }
-  }
-}
+#### ⚡ Lambda Execution Flow
+
+```
+1. Event Trigger (API Gateway/EventBridge)
+   ↓
+2. Lambda Function Invocation
+   ↓
+3. Multi-Factor Pricing Algorithm Execution
+   ├── Demand Elasticity Analysis
+   ├── Inventory Level Assessment
+   ├── Time Factor Calculation
+   ├── Competitor Price Comparison
+   ├── User Segment Analysis
+   ├── Historical Performance Review
+   └── External Factors Evaluation
+   ↓
+4. AWS Bedrock AI Integration (Confidence Scoring)
+   ↓
+5. DynamoDB Data Persistence
+   ↓
+6. Real-time Response/Event Emission
 ```
 
-### 2. Product Catalog (`product-catalog.ts`)
-**Purpose**: Dynamic product catalog with real-time pricing updates
+### AWS Services Integration
 
-**Features**:
-- Product listing with filtering
-- Category-based searches
-- Inventory status
-- Dynamic pricing updates
-- Pagination support
+#### 🎯 Lambda-Centric Architecture
 
-**API Endpoints**:
-- `GET /products` - List all products
-- `GET /products/{productId}` - Get specific product
-- `GET /products?category=travel` - Filter by category
+- **AWS Lambda** - **Core compute engine** for all pricing operations
+- **API Gateway** - RESTful endpoints that trigger Lambda functions
+- **EventBridge** - Event-driven triggers for scheduled Lambda executions
+- **DynamoDB** - NoSQL database accessed by Lambda functions
+- **S3** - Static hosting for frontend, data storage for Lambda
+- **CloudWatch** - Monitoring Lambda performance and errors
+- **AWS Bedrock** - AI/ML services integrated with Lambda for confidence scoring
 
-### 3. Analytics API (`analytics-api.ts`)
-**Purpose**: Comprehensive analytics and reporting
+#### 🔄 Event-Driven Architecture
 
-**Features**:
-- Overview dashboards
-- Product performance metrics
-- User segment analysis
-- Market trend analysis
-- Real-time monitoring
-- Revenue impact tracking
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Frontend  │───►│ API Gateway │───►│   Lambda    │
+│  (User)     │    │             │    │  Functions  │
+└─────────────┘    └─────────────┘    └─────────────┘
+                           │                   │
+                           ▼                   ▼
+                   ┌─────────────┐    ┌─────────────┐
+                   │ EventBridge │───►│   Lambda    │
+                   │ (Scheduled) │    │  Functions  │
+                   └─────────────┘    └─────────────┘
+                                              │
+                                              ▼
+                                     ┌─────────────┐
+                                     │  DynamoDB   │
+                                     │ (Data Store)│
+                                     └─────────────┘
+```
 
-**API Endpoints**:
-- `GET /analytics/overview` - Dashboard overview
-- `GET /analytics/products` - Product performance
-- `GET /analytics/segments` - User segment analysis
-- `GET /analytics/realtime` - Live metrics
+### Multi-Factor Pricing Algorithm
 
-### 4. Simulation Trigger (`simulation-trigger.ts`)
-**Purpose**: Automated price optimization simulation
+The application implements a sophisticated pricing algorithm that considers 7 key factors:
 
-**Features**:
-- Scheduled execution (every 5 minutes)
-- Market event simulation
-- Multi-product optimization
-- Performance reporting
-- CloudWatch integration
+- **Demand Elasticity** - Real-time buy/no-buy patterns and price sensitivity
+- **Inventory Levels** - Stock-based pricing adjustments
+- **Time Factors** - Seasonality, holidays, peak hours
+- **Competitor Pricing** - Market intelligence and competitive positioning
+- **User Segments** - Personalized pricing strategies
+- **Historical Performance** - Price-demand curve analysis
+- **External Factors** - Weather, economic indicators, market conditions
 
-**Trigger**: EventBridge scheduled rule
+## 🚀 Features
 
-## 🛠️ Setup & Deployment
+- **Real-time Price Updates** - WebSocket-based live price updates
+- **Multi-Factor Pricing Algorithm** - Advanced 7-factor pricing model
+- **A/B Testing Framework** - Built-in experimentation capabilities
+- **Analytics Dashboard** - Comprehensive performance monitoring
+- **Price History Tracking** - Complete audit trail of price changes
+- **User Behavior Analysis** - Personalized pricing based on segments
+- **AI-Powered Confidence Scoring** - AWS Bedrock integration for ML insights
+
+## 📁 Project Structure
+
+```
+Real-time-price-opt/
+├── backend/                    # Backend services
+│   ├── api-handlers/          # API Gateway handlers
+│   ├── event-processors/      # EventBridge processors
+│   ├── lambda-functions/      # Core Lambda functions
+│   └── pricing-engine/        # Multi-factor pricing algorithm
+├── frontend/                  # React TypeScript application
+├── infrastructure/            # AWS CDK infrastructure
+├── docs/                     # Documentation
+└── scripts/                  # Deployment scripts
+```
+
+## 🛠️ Technology Stack
+
+### Backend
+- **Node.js 18+** - Runtime environment
+- **TypeScript** - Type-safe development
+- **AWS SDK v3** - AWS service integration
+- **AWS Bedrock** - AI/ML capabilities
+
+### Frontend
+- **React 18** - UI framework
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Styling framework
+- **Recharts** - Data visualization
+- **Socket.io** - Real-time updates
+
+### Infrastructure
+- **AWS CDK** - Infrastructure as Code
+- **TypeScript** - CDK definitions
+
+## 🚀 Quick Start
 
 ### Prerequisites
+- Node.js 18+ and npm
 - AWS CLI configured
-- Node.js 18+ installed
-- TypeScript installed globally
-- Proper IAM permissions
+- AWS CDK installed globally: `npm install -g aws-cdk`
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd Real-time-price-opt
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm run setup
+   ```
+
+3. **Configure environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your AWS configuration
+   ```
+
+4. **Deploy to AWS**
+   ```bash
+   chmod +x scripts/deploy.sh
+   ./scripts/deploy.sh
+   ```
+
+## 📡 API Endpoints
+
+- `POST /pricing/calculate` - Calculate optimal price for a product
+- `GET /pricing/history/{productId}` - Retrieve price history
+- `GET /products` - Get all available products
+- `POST /products/{productId}/purchase` - Record purchase events
+
+## 🎯 Use Cases
+
+### E-commerce
+- Dynamic pricing based on inventory levels
+- Seasonal and holiday pricing adjustments
+- Competitor price monitoring and response
+- Personalized pricing for different customer segments
+
+### Travel & Hospitality
+- Flight pricing optimization
+- Hotel room rate adjustments
+- Weather-based pricing for travel packages
+- Peak/off-peak pricing strategies
+
+### Marketplaces
+- Real-time auction pricing
+- Supply-demand balancing
+- Vendor performance-based pricing
+- Market condition adjustments
+
+## 📈 Monitoring & Analytics
+
+### CloudWatch Integration
+- **API Gateway Monitoring** - Track API performance and errors
+- **Lambda Function Metrics** - Monitor execution times and errors
+- **DynamoDB Performance** - Track read/write capacity and throttling
+- **Custom Business Metrics** - Price change frequency and impact
+
+### Built-in Alarms
+- API Gateway 5xx errors
+- Lambda function errors
+- DynamoDB throttling
+
+### Analytics Dashboard
+- Real-time price change tracking
+- Revenue impact analysis
+- User behavior insights
+- A/B test results visualization
+
+## 🧪 Development
+
+### Running Tests
+```bash
+# Run all tests
+npm test
+
+# Backend tests only
+npm run test:backend
+
+# Frontend tests only
+npm run test:frontend
+```
 
 ### Local Development
-
-1. **Install Dependencies**:
 ```bash
-cd backend/lambda-functions
-npm install
+# Start development servers
+npm run dev
+
+# Backend only
+npm run dev:backend
+
+# Frontend only
+npm run dev:frontend
 ```
 
-2. **Build TypeScript**:
-```bash
-npm run build
-```
+## 📚 Documentation
 
-3. **Run Local Tests**:
-```bash
-node test-local.js
-```
+- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - Detailed deployment instructions
+- **[Lambda Functions README](README_LAMBDA.md)** - Lambda function documentation
 
-### AWS Deployment
+## 🤝 Contributing
 
-1. **Deploy Lambda Functions**:
-```bash
-chmod +x scripts/deploy-lambda.sh
-./scripts/deploy-lambda.sh
-```
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-2. **Verify Deployment**:
-```bash
-aws lambda list-functions --query 'Functions[?contains(FunctionName, `price-optimization`)].FunctionName'
-```
+## 📄 License
 
-## 🧪 Testing the System
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### Local Testing
-```bash
-cd backend/lambda-functions
-node test-local.js
-```
+## 🆘 Support
 
-**Expected Output**:
-```
-🚀 Starting AWS Lambda Function Tests for Price Optimization
-============================================================
+For support and questions:
+- Create an issue in the repository
+- Check the [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for common issues
+- Review CloudWatch logs for debugging information
 
-🧮 Testing Price Calculator Lambda...
+## 🔮 Roadmap
 
-📋 Test: Flight Ticket Pricing
-   Product: Premium Flight Ticket - NYC to LAX
-   Original Price: $299.99
-   New Price: $356.24
-   Change: 18.75% (increase)
-   Confidence: 85.0%
-   User Segment: returning_customer
+- [ ] Machine Learning model integration for better predictions
+- [ ] Advanced competitor price scraping
+- [ ] Multi-currency support
+- [ ] Advanced A/B testing framework
+- [ ] Mobile application
+- [ ] Integration with popular e-commerce platforms
+- [ ] Advanced analytics and reporting
+- [ ] Real-time notifications and alerts
 
-📋 Test: Hotel Room Pricing - VIP Customer
-   Product: Luxury Hotel Room - Manhattan
-   Original Price: $250.00
-   New Price: $267.50
-   Change: 7.00% (increase)
-   Confidence: 88.0%
-   User Segment: vip_customer
-```
+---
 
-### API Testing with curl
-
-1. **Price Calculator**:
-```bash
-curl -X POST https://your-api-id.execute-api.us-east-1.amazonaws.com/prod/pricing/calculate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "productId": "prod-001",
-    "userId": "user-123",
-    "userSegment": "returning_customer"
-  }'
-```
-
-2. **Product Catalog**:
-```bash
-curl https://your-api-id.execute-api.us-east-1.amazonaws.com/prod/products
-```
-
-3. **Analytics**:
-```bash
-curl https://your-api-id.execute-api.us-east-1.amazonaws.com/prod/analytics/overview
-```
-
-## 📊 Monitoring & Observability
-
-### CloudWatch Logs
-Monitor function execution:
-```bash
-aws logs tail /aws/lambda/price-optimization-calculator --follow
-```
-
-### CloudWatch Metrics
-Key metrics to monitor:
-- Function duration
-- Error rate
-- Invocation count
-- Throttles
-
-### Custom Metrics
-The system tracks:
-- Price optimization accuracy
-- Revenue impact
-- User segment performance
-- Market trend analysis
-
-## 🎯 Pricing Algorithm Details
-
-### Factors Considered
-1. **Time-based**: Rush hours, weekends, holidays
-2. **Inventory**: Stock levels and availability
-3. **Demand**: Historical and real-time demand patterns
-4. **User Segments**: Customer loyalty and price sensitivity
-5. **Competition**: Competitor pricing analysis
-6. **External**: Weather, economic indicators, seasonality
-
-### Algorithm Flow
-```
-Base Price → Factor Analysis → Price Adjustments → Constraints → Final Price
-     ↓              ↓               ↓              ↓           ↓
-  $299.99    [Multiple factors]  [+/- %]    [Floor/Ceiling]  $334.50
-```
-
-### Confidence Scoring
-- **High (85-95%)**: Strong data, clear patterns
-- **Medium (70-84%)**: Good data, some uncertainty
-- **Low (50-69%)**: Limited data, high uncertainty
-
-## 🔧 Configuration
-
-### Environment Variables
-```bash
-AWS_REGION=us-east-1
-PRODUCTS_TABLE=Products
-PRICING_HISTORY_TABLE=PricingHistory
-USERS_TABLE=Users
-```
-
-### Function Settings
-- **Runtime**: Node.js 18.x
-- **Memory**: 512 MB
-- **Timeout**: 30 seconds
-- **Concurrency**: Reserved capacity available
-
-## 📈 Performance Characteristics
-
-### Benchmarks (Local Testing)
-- **Single Request**: ~150ms average
-- **Concurrent (10 req)**: ~200ms average per request
-- **Success Rate**: 99.5%
-- **Throughput**: ~50 requests/second
-
-### AWS Lambda Performance
-- **Cold Start**: ~500ms
-- **Warm Start**: ~50ms
-- **Concurrent Executions**: Up to 1000 (default)
-
-## 🚨 Error Handling
-
-### Common Errors
-1. **400 Bad Request**: Missing productId
-2. **404 Not Found**: Product not found
-3. **500 Internal Error**: Processing failure
-
-### Retry Logic
-- Exponential backoff for external API calls
-- Circuit breaker for downstream services
-- Graceful degradation for non-critical features
-
-## 💰 Cost Optimization
-
-### AWS Lambda Costs
-- **Requests**: $0.20 per 1M requests
-- **Duration**: $0.0000166667 per GB-second
-- **Estimated Monthly**: ~$5-10 for proof of concept
-
-### Optimization Strategies
-- Right-size memory allocation
-- Optimize cold start times
-- Use provisioned concurrency for critical functions
-- Implement efficient caching
-
-## 🔮 Future Enhancements
-
-### Phase 2 Features
-- [ ] Machine learning integration (SageMaker)
-- [ ] Real-time data streaming (Kinesis)
-- [ ] A/B testing framework
-- [ ] Advanced competitor monitoring
-- [ ] Mobile app integration
-
-### Scalability Improvements
-- [ ] DynamoDB integration
-- [ ] Redis caching layer
-- [ ] API rate limiting
-- [ ] Multi-region deployment
-
-## 📚 Additional Resources
-
-- [AWS Lambda Developer Guide](https://docs.aws.amazon.com/lambda/)
-- [API Gateway Documentation](https://docs.aws.amazon.com/apigateway/)
-- [EventBridge User Guide](https://docs.aws.amazon.com/eventbridge/)
-- [CloudWatch Monitoring](https://docs.aws.amazon.com/cloudwatch/)
-
-
-
-### Multi-Factor Pricing Algorithm:
-1. **Demand Elasticity** - Real-time buy/no-buy patterns
-2. **Inventory Levels** - Stock-based pricing adjustments
-3. **Time Factors** - Seasonality, holidays, day-of-week
-4. **Competitor Pricing** - Market intelligence integration
-5. **User Segments** - Personalized pricing
-6. **Historical Performance** - Price-demand curve analysis
-7. **External Factors** - Weather, economic indicators
-
-## Features:
-- Real-time price updates via WebSocket
-- Multi-factor pricing algorithm
-- A/B testing framework
-- Analytics dashboard
-
-
+**Built with ❤️ using AWS Lambda as the core engine** - **Sai Krishna Reddy Mareddy**
