@@ -1,0 +1,21 @@
+{
+  "name": "price-optimization-lambda-functions",
+  "version": "1.0.0",
+  "description": "AWS Lambda functions for real-time price optimization",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "package": "npm run build && zip -r lambda-functions.zip dist/",
+    "deploy": "aws lambda update-function-code --function-name price-calculator --zip-file fileb://lambda-functions.zip"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.0.0",
+    "@aws-sdk/lib-dynamodb": "^3.0.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.0",
+    "@types/node": "^18.0.0",
+    "typescript": "^4.9.0"
+  }
+} 
