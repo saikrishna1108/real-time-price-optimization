@@ -5,6 +5,21 @@
  The system simulates dynamic pricing based on multiple factors including demand, inventory, time, user segments, and market conditions.
 
 ## 🏗️ Architecture
+# Real-Time Price Optimization Application
+
+A serverless AWS-based application that implements Multi-Factor Pricing Algorithm for dynamic price optimization across various industries (e-commerce, flights, marketplaces).
+
+## Architecture
+
+### AWS Services Used:
+- **AWS Lambda** - Core serverless compute
+- **API Gateway** - RESTful API endpoints
+- **EventBridge** - Event-driven triggers
+- **DynamoDB** - NoSQL database
+- **S3** - Static hosting & data storage
+- **CloudWatch** - Monitoring & logging
+- **AWS Bedrock** - AI/ML services
+
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
@@ -337,15 +352,21 @@ USERS_TABLE=Users
 - [EventBridge User Guide](https://docs.aws.amazon.com/eventbridge/)
 - [CloudWatch Monitoring](https://docs.aws.amazon.com/cloudwatch/)
 
-## 🤝 Contributing
 
-This is a proof of concept for demonstration purposes. For production use:
-1. Implement proper error handling
-2. Add comprehensive testing
-3. Set up CI/CD pipeline
-4. Add security measures
-5. Implement data persistence
 
-## 📄 License
+### Multi-Factor Pricing Algorithm:
+1. **Demand Elasticity** - Real-time buy/no-buy patterns
+2. **Inventory Levels** - Stock-based pricing adjustments
+3. **Time Factors** - Seasonality, holidays, day-of-week
+4. **Competitor Pricing** - Market intelligence integration
+5. **User Segments** - Personalized pricing
+6. **Historical Performance** - Price-demand curve analysis
+7. **External Factors** - Weather, economic indicators
 
-This project is for educational and demonstration purposes only. 
+## Features:
+- Real-time price updates via WebSocket
+- Multi-factor pricing algorithm
+- A/B testing framework
+- Analytics dashboard
+
+
